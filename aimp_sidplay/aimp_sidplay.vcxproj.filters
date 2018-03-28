@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="aimpapi">
+      <UniqueIdentifier>{1c52d137-b1ea-4ee4-980e-deb81e9895d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiActions.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiAlbumArt.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiCore.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiDecoders.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiFileManager.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiGUI.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiInternet.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiLyrics.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiMenu.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiMessages.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiMUI.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiMusicLibrary.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiObjects.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiOptions.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiPlayer.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiPlaylists.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiPlugin.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiRemote.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiScheduler.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiSkins.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiTagEditor.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiThreading.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="aimpapi\apiVisuals.h">
+      <Filter>aimpapi</Filter>
+    </ClInclude>
+    <ClInclude Include="typesdefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSidPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StilBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c64roms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="configDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidplayPlugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IUnknownInterfaceImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidPluginFileFormats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidFileStreaming.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidFileExpander.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidFileInfoProvider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ISidFileStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SidFileStreamFake.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidVirtualFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidplayDecoderFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSidplayDecoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AimpStringHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSidPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StilBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="configDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidplayPlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidPluginFileFormats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidFileStreaming.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidFileExpander.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidFileInfoProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SidFileStreamFake.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidVirtualFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidplayDecoderFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSidplayDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="aimp_sidplay.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="aimp_sidplay.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
