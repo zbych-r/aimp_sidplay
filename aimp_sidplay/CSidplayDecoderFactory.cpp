@@ -36,7 +36,5 @@ HRESULT CSidplayDecoderFactory::CreateDecoder(IAIMPStream * Stream, DWORD Flags,
 		*Decoder = sidDecoder;
 		return S_OK;
 	}
-	//return E_NOTIMPL;
-	//return S_FALSE;
 	return E_FAIL;
 }

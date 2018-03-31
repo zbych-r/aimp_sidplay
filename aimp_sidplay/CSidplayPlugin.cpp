@@ -59,7 +59,6 @@ bool CSidplayPlugin::FillFileInfo(wstring& fileUri, IAIMPFileInfo * Info)
 	return FillFileInfo(fileUri.c_str(), Info);
 }
 
-
 bool CSidplayPlugin::FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info)
 {
 	//const int MAX_PATH = 512;

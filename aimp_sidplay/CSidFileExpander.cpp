@@ -44,9 +44,7 @@ HRESULT CSidFileExpander::Expand(IAIMPString * FileName, IAIMPObjectList ** List
 	{
 		return E_FAIL;
 	}
-	
-	
-	//const int MAX_PATH_LEN = 512;
+
 	if ((*List) == NULL)
 	{
 		m_core->CreateObject(IID_IAIMPObjectList, (void**)List);

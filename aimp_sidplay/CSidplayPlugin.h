@@ -51,7 +51,6 @@ public:
 	bool FillFileInfo(wstring& fileUri, IAIMPFileInfo * Info);
 	int GetTuneLength(SidTune& tune);
 	CThreadSidPlayer* CreatePlayerInstance();
-	//void PrintToConsole(const char *text);
 	void PrintToConsole(const wstring* str);
 
 	// Inherited via IUnknownInterfaceImpl
