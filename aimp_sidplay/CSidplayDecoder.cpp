@@ -11,6 +11,13 @@ int CSidplayDecoder::sDecoderIdGen = 0;
 CSidplayDecoder::CSidplayDecoder(wchar_t* fileName, int subsong) 
 {
 	AddRef();
+
+	if (fileName == NULL)
+	{
+		m_player = NULL;
+		return;
+	}
+
 	m_fileName.assign(fileName);
 
 	m_player = CSidplayPlugin::Instance()->CreatePlayerInstance();
@@ -26,7 +33,10 @@ CSidplayDecoder::CSidplayDecoder(wchar_t* fileName, int subsong)
 
 CSidplayDecoder::~CSidplayDecoder()
 {
-	delete m_player;
+	if (m_player != NULL)
+	{
+		delete m_player;
+	}
 }
 
 HRESULT CSidplayDecoder::QueryInterface(REFIID riid, void ** ppvObject)
@@ -42,6 +52,10 @@ HRESULT CSidplayDecoder::QueryInterface(REFIID riid, void ** ppvObject)
 
 BOOL CSidplayDecoder::GetFileInfo(IAIMPFileInfo * FileInfo)
 {
+	if (m_player == NULL)
+	{
+		return FALSE;
+	}
 	CSidplayPlugin::Instance()->FillFileInfo(m_fileName.c_str(), FileInfo);
 	return TRUE;
 }
@@ -49,7 +63,10 @@ BOOL CSidplayDecoder::GetFileInfo(IAIMPFileInfo * FileInfo)
 BOOL CSidplayDecoder::GetStreamInfo(int * SampleRate, int * Channels, int * SampleFormat)
 {
 	
-
+	if (m_player == NULL)
+	{
+		return FALSE;
+	}
 	*SampleRate = m_player->GetCurrentConfig().sidConfig.frequency;
 	*Channels = m_player->GetCurrentConfig().sidConfig.playback;
 	*SampleFormat = AIMP_DECODER_SAMPLEFORMAT_16BIT;

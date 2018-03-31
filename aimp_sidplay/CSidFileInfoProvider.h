@@ -3,7 +3,7 @@
 #include "apiCore.h"
 #include "IUnknownInterfaceImpl.h"
 #include "apiFileManager.h"
-
+#include <string>
 
 class CSidFileInfoProvider : public IUnknownInterfaceImpl<IAIMPExtensionFileInfoProvider>
 {

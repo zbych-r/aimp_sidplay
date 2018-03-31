@@ -27,8 +27,17 @@ HRESULT CSidFileInfoProvider::QueryInterface(REFIID riid, void ** ppvObject)
 
 HRESULT CSidFileInfoProvider::GetFileInfo(IAIMPString * FileURI, IAIMPFileInfo * Info)
 {
+	wstring fileUri = wstring(FileURI->GetData());
+	
+	if (fileUri.find_first_of(L".sid") == wstring::npos)
+	{
+		return E_FAIL;
+	}
 	CSidplayPlugin* pluginContext = CSidplayPlugin::Instance();
-	pluginContext->FillFileInfo(FileURI, Info);
+	if (pluginContext->FillFileInfo(FileURI, Info) == false)
+	{
+		return E_FAIL;
+	}
 	return S_OK;
 
 }

@@ -33,6 +33,19 @@ HRESULT CSidFileExpander::QueryInterface(REFIID riid, void ** ppvObject)
 
 HRESULT CSidFileExpander::Expand(IAIMPString * FileName, IAIMPObjectList ** List, IAIMPProgressCallback * ProgressCallback)
 {
+	wstring filename = wstring(FileName->GetData());
+	
+	size_t extPos = filename.rfind(L".sid");
+	if (extPos == wstring::npos)
+	{
+		return E_FAIL;
+	}
+	if(extPos + 4 < filename.length())
+	{
+		return E_FAIL;
+	}
+	
+	
 	//const int MAX_PATH_LEN = 512;
 	if ((*List) == NULL)
 	{
@@ -65,5 +78,5 @@ HRESULT CSidFileExpander::Expand(IAIMPString * FileName, IAIMPObjectList ** List
 		}
 		return S_OK;
 	}
-	return S_FALSE;
+	return E_FAIL;
 }

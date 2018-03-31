@@ -124,7 +124,10 @@ HRESULT CSidVirtualFile::GetFileInfo(IAIMPFileInfo * Info)
 {
 	CSidplayPlugin* plugin = CSidplayPlugin::Instance();
 	
-	plugin->FillFileInfo(m_fileUri, Info);
+	if (plugin->FillFileInfo(m_fileUri, Info) == false)
+	{
+		return E_FAIL;
+	}
 	return S_OK;
 }
 

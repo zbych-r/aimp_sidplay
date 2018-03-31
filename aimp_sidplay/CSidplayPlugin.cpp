@@ -49,24 +49,34 @@ CThreadSidPlayer* CSidplayPlugin::CreatePlayerInstance()
 	return sidPlayer;
 }
 
-void CSidplayPlugin::FillFileInfo(IAIMPString * FileURI, IAIMPFileInfo * Info)
+bool CSidplayPlugin::FillFileInfo(IAIMPString * FileURI, IAIMPFileInfo * Info)
 {
-	FillFileInfo(FileURI->GetData(), Info);
+	return FillFileInfo(FileURI->GetData(), Info);
 }
 
-void CSidplayPlugin::FillFileInfo(wstring& fileUri, IAIMPFileInfo * Info)
+bool CSidplayPlugin::FillFileInfo(wstring& fileUri, IAIMPFileInfo * Info)
 {
-	FillFileInfo(fileUri.c_str(), Info);
+	return FillFileInfo(fileUri.c_str(), Info);
 }
 
 
-void CSidplayPlugin::FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info)
+bool CSidplayPlugin::FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info)
 {
 	//const int MAX_PATH = 512;
 	IAIMPString *astr;
 	wstring strUri(fileUri);
 	size_t extensionPos = strUri.rfind(L".sid");
 	size_t subsongPos = strUri.find(L":", extensionPos);
+
+	if (extensionPos == wstring::npos)
+	{
+		return false;
+	}
+	if ((extensionPos + 4 < strUri.length()) && (strUri.at(extensionPos + 4) != L':'))
+	{
+		return false;
+	}
+
 	wstring fileNameOnly;
 	int subsongNumber = 0;
 	if (subsongPos == wstring::npos)
@@ -131,7 +141,7 @@ void CSidplayPlugin::FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info)
 	const double duration = (double)m_sidDatabase.length(sidtune);	//m_player->GetSongLength(sidtune);
 	Info->SetValueAsFloat(AIMP_FILEINFO_PROPID_DURATION, duration);
 
-
+	return true;
 }
 
 PWCHAR CSidplayPlugin::InfoGet(int Index)
@@ -180,6 +190,7 @@ HRESULT CSidplayPlugin::Initialize(IAIMPCore * Core)
 	
 
 	//register known extension
+	
 	m_fileFormats = new CSidPluginFileFormats(m_core);
 	//m_fileFormats->AddRef();
 	res = Core->RegisterExtension(IID_IAIMPServiceFileFormats, static_cast<IAIMPExtensionFileFormat*>(m_fileFormats));

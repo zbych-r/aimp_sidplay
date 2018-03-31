@@ -46,9 +46,9 @@ public:
 		return m_instance;
 	}
 
-	void FillFileInfo(IAIMPString * FileURI, IAIMPFileInfo * Info);
-	void FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info);
-	void FillFileInfo(wstring& fileUri, IAIMPFileInfo * Info);
+	bool FillFileInfo(IAIMPString * FileURI, IAIMPFileInfo * Info);
+	bool FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info);
+	bool FillFileInfo(wstring& fileUri, IAIMPFileInfo * Info);
 	int GetTuneLength(SidTune& tune);
 	CThreadSidPlayer* CreatePlayerInstance();
 	//void PrintToConsole(const char *text);
