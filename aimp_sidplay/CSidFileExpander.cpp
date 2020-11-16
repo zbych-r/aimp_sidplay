@@ -52,7 +52,16 @@ HRESULT CSidFileExpander::Expand(IAIMPString * FileName, IAIMPObjectList ** List
 		char fileName[MAX_PATH];
 		wcstombs(fileName, FileName->GetData(), MAX_PATH);
 		SidTune sidTune(fileName);
+		if (sidTune.getStatus() == false)
+		{
+			return E_FAIL;
+		}
 		const SidTuneInfo *sidInfo = sidTune.getInfo();
+		//NULL means usually that file doesn't exists
+		if (sidInfo == NULL)
+		{
+			return E_FAIL;
+		}
 
 		CSidVirtualFile* vf;
 		if (sidInfo->songs() > 1)

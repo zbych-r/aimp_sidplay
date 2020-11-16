@@ -92,6 +92,10 @@ bool CSidplayPlugin::FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info)
 	char filePath[MAX_PATH];
 	wcstombs(filePath, fileNameOnly.c_str(), MAX_PATH);
 	SidTune sidtune(filePath);
+	if (sidtune.getStatus() == false)
+	{
+		return false;
+	}
 	const SidTuneInfo* sidInfo = sidtune.getInfo();
 
 	wchar_t tempWchr[512];
