@@ -68,6 +68,8 @@ const CombinedWaveformConfig config[2][4] =
  */
 short calculateCombinedWaveform(CombinedWaveformConfig config, int waveform, int accumulator)
 {
+    _fpreset();
+    _clearfp();
     float o[12];
 
     // Saw
@@ -123,7 +125,7 @@ short calculateCombinedWaveform(CombinedWaveformConfig config, int waveform, int
         for (int i = 12; i > 0; i--)
         {
             distancetable[12-i] = 1.0f / pow(config.distance1, i);
-            distancetable[12+i] = 1.0f / pow(config.distance2, i);
+            distancetable[12+i] = config.distance2 == 0.0f ? INFINITY : 1.0f / pow(config.distance2, i);
         }
 
         float tmp[12];

@@ -307,7 +307,11 @@ void SelectHvscDirectory(HWND hWnd)
 }
 
 
+#ifdef _WIN64
+INT_PTR ConfigDlgWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+#else
 int CALLBACK ConfigDlgWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+#endif
 {
 	CThreadSidPlayer* sidPlayer;
 	switch(uMsg)
