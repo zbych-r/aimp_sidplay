@@ -141,7 +141,19 @@ bool CSidplayPlugin::FillFileInfo(const wchar_t* fileUri, IAIMPFileInfo * Info)
 	astr = AimpStringHelper::Wchar2AIMPString(tempWchr, m_core);
 	Info->SetValueAsObject(AIMP_FILEINFO_PROPID_COMMENT, reinterpret_cast<IUnknown*>(astr));
 
-	const double duration = (double)m_sidDatabase.length(sidtune);	//m_player->GetSongLength(sidtune);
+	double duration = (double)m_sidDatabase.length(sidtune) ;	//m_player->GetSongLength(sidtune);
+	if (duration <= 0)
+	{
+		if (m_player != nullptr)
+		{
+			PlayerConfig cfg = m_player->GetCurrentConfig();
+			duration = m_player->GetCurrentConfig().playLimitSec;
+		}
+		else
+		{
+			duration = 180;
+		}
+	}
 	Info->SetValueAsFloat(AIMP_FILEINFO_PROPID_DURATION, duration);
 
 	return true;
@@ -183,8 +195,8 @@ HRESULT CSidplayPlugin::Initialize(IAIMPCore * Core)
 	PlayerConfig pc = player->GetCurrentConfig();
 	if ((pc.useSongLengthFile) && (pc.songLengthsFile != NULL))
 	{
-		int openRes = m_sidDatabase.open(pc.songLengthsFile);
-		if (openRes != 0)
+		bool openRes = m_sidDatabase.open(pc.songLengthsFile);
+		if (!openRes)
 		{
 			MessageBoxA(NULL, "Error opening songlength database.\r\nDisable songlength databse or choose other file", "in_sidplay2", MB_OK);
 		}

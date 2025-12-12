@@ -51,8 +51,11 @@ private:
 	SidTune m_tune;
 	PlayerConfig m_playerConfig;
 	PlayerStatus_t m_playerStatus;
+	/**
+	* Curently decoded number of bytes
+	*/
 	UINT64  m_decodedBytesCount;
-	//! Length in bytes
+	//! Total son length in bytes
 	UINT64 m_totalBytesCount;
 	//! Length in seconds
 	int m_currentTuneLength;

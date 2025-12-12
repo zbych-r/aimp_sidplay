@@ -111,6 +111,9 @@ void CThreadSidPlayer::LoadTune(const char* name, int startSong)
 		m_currentTuneLength = m_playerConfig.playLimitSec;
 	}
 	m_engine->load(&m_tune);
+	m_engine->initMixer(m_playerConfig.sidConfig.playback == SidConfig::playback_t::STEREO);
+	m_engine->reset();
+ 
 	//mute must be applied after SID's have been created
 	for (int sid = 0; sid < 3; ++sid)
 	{
@@ -121,6 +124,7 @@ void CThreadSidPlayer::LoadTune(const char* name, int startSong)
 	}
 
 	m_decodedBytesCount = 0;
+
 	//sidconfig.playback is enum with values 1 for mono and 2 for stereo, all is multipliet by 2 to have bytes instead of 16bit sample count
 	m_totalBytesCount = m_currentTuneLength * m_playerConfig.sidConfig.frequency * m_playerConfig.sidConfig.playback * 2; 
 	m_playerStatus = PlayerStatus_t::SP_RUNNING;
@@ -151,7 +155,16 @@ void CThreadSidPlayer::PlaySubtune(int subTune)
 	m_engine->stop();
 	m_engine->load(&m_tune);
 	m_decodedBytesCount = 0;
-	//Play();
+
+	m_engine->initMixer(m_playerConfig.sidConfig.playback == SidConfig::playback_t::STEREO);
+	m_engine->reset();
+	for (int sid = 0; sid < 3; ++sid)
+	{
+		for (int voice = 0; voice < 3; ++voice)
+		{
+			m_engine->mute(sid, voice, !m_playerConfig.voiceConfig[sid][voice]);
+		}
+	}
 	m_playerStatus = PlayerStatus_t::SP_RUNNING;
 }
 
@@ -427,8 +440,9 @@ void CThreadSidPlayer::SetConfig(PlayerConfig* newConfig)
 	{
 		//delete m_playerConfig.sidConfig.sidEmulation;
 	}
-	m_playerConfig.sidConfig.sidEmulation = 0;
+	m_playerConfig.sidConfig.sidEmulation = nullptr;
 	m_engine->config(m_playerConfig.sidConfig);
+
 	if (currentBuilder != NULL)
 	{
 		delete currentBuilder;
@@ -452,19 +466,8 @@ void CThreadSidPlayer::SetConfig(PlayerConfig* newConfig)
 
 	m_playerConfig.sidConfig.samplingMethod = SidConfig::INTERPOLATE; //RESAMPLE_INTERPOLATE
 
-	for (int sid = 0; sid < 3; ++sid)
-	{
-		for (int voice = 0; voice < 3; ++voice)
-		{
-			m_playerConfig.voiceConfig[sid][voice] = newConfig->voiceConfig[sid][voice];
-		}
-	}
 	m_playerConfig.pseudoStereo = newConfig->pseudoStereo;
 	m_playerConfig.sid2Model = newConfig->sid2Model;
-	
-
-	
-	
 
 	//string memory cannot overlap !!!
 	if(m_playerConfig.songLengthsFile != newConfig->songLengthsFile)
@@ -530,12 +533,12 @@ void CThreadSidPlayer::SetConfig(PlayerConfig* newConfig)
 		
 		m_playerConfig.sidConfig.sidEmulation = rs;
 		rs->create((m_engine->info()).maxsids());
-		
-
 		rs->filter6581Curve(0.5);
-		rs->filter8580Curve((double)12500);
+		rs->filter8580Curve(0.5);
+		rs->filter6581Range(0.5);
+		rs->combinedWaveformsStrength(SidConfig::sid_cw_t::AVERAGE);
 		//filter always enabled
-		rs->filter(true);		
+		rs->filter(true);
 	}
 
 	//TO CHANGE !!!!!!!
@@ -547,32 +550,21 @@ void CThreadSidPlayer::SetConfig(PlayerConfig* newConfig)
 	else
 	{
 		m_playerConfig.sidConfig.secondSidAddress = 0;
-		m_playerConfig.sidConfig.secondSidModel = -1;
+		m_playerConfig.sidConfig.secondSidModel = SidConfig::sid_model_t::MOS8580;
 	}
-	//m_playerConfig.sidConfig.
-	m_engine->config(m_playerConfig.sidConfig);
-
-
 	//kernal,basic,chargen
 	m_engine->setRoms(KERNAL_ROM, BASIC_ROM, CHARGEN_ROM);
+	m_engine->config(m_playerConfig.sidConfig);
+	m_engine->initMixer(m_playerConfig.sidConfig.playback == SidConfig::playback_t::STEREO);
+	//m_engine->reset();
 
-	/***** The song length database is loaded only once by plugin and passed to other instances of player in constructor ********/
-	//open song length database
-	/*
-	if((m_playerConfig.useSongLengthFile) && (m_playerConfig.songLengthsFile != NULL))
+	for (int sid = 0; sid < 3; ++sid)
 	{
-		openRes = m_sidDatabase.open(m_playerConfig.songLengthsFile);
-		if(openRes != 0) MessageBoxA(NULL,"Error opening songlength database.\r\nDisable songlength databse or choose other file","in_sidplay2",MB_OK);
+		for (int voice = 0; voice < 3; ++voice)
+		{
+			m_playerConfig.voiceConfig[sid][voice] = newConfig->voiceConfig[sid][voice];
+		}
 	}
-	*/
-	//open STIL file
-	/*
-	if((m_playerConfig.useSTILfile) && (m_playerConfig.hvscDirectory != NULL))
-	{
-		ClearSTILData();
-		FillSTILData();
-		FillSTILData2();
-	}*/
 }
 
 int CThreadSidPlayer::GetSongLength(SidTune &tune)
@@ -617,25 +609,34 @@ void CThreadSidPlayer::DoSeek(UINT64 newPos)
 		m_tune.selectSong(m_tune.getInfo()->currentSong());
 		//m_currentTuneLength = m_sidDatabase.length(m_tune);//we know length of tune already
 		m_engine->stop();
-		m_engine->load(&m_tune);//timers are now 0
+		m_engine->load(&m_tune);
+		m_engine->initMixer(m_playerConfig.sidConfig.playback == SidConfig::playback_t::STEREO);
+		m_engine->reset();	//timers are now 0
 		skip_bytes = newPos;
+		m_decodedBytesCount = 0;
 	}
 	else
 	{
 		skip_bytes = newPos - m_decodedBytesCount;
 	}
 
-	m_engine->fastForward(3200);
-	skip_bytes = skip_bytes >> 5; //divide by 32 because we set fastforward factor to 3200% speed
-	while (skip_bytes > TEMP_BUF_LEN)
-	{
-		decodedLen = 2 * m_engine->play(reinterpret_cast<short*>(tmpDecodeBuf), TEMP_BUF_LEN / 2);
-		skip_bytes -= decodedLen;
-	}
 
-	//now take time calculationns from emulation engine and calculate other variables
-	
-	m_decodedBytesCount = m_engine->time() * freq * m_playerConfig.sidConfig.playback * 2;
+	int stereoMultiply = (m_playerConfig.sidConfig.playback == SidConfig::playback_t::STEREO) ? 2 : 1;
+	//convert seek byte count to milisecond offsett
+	UINT32 seekMs = skip_bytes / sizeof(short) / (freq /1000) / stereoMultiply;
+	//naow we have to add seek count to total miliseconds time
+	seekMs += m_engine->timeMs();
+
+	const int CYCLE_COUNT = 5000;
+	m_engine->fastForward(3200);
+
+	while (m_engine->timeMs() < seekMs)
+	{
+		auto x = m_engine->timeMs();
+		decodedLen += (stereoMultiply * sizeof(short) * m_engine->play(CYCLE_COUNT));
+	}
+	//update decoded bytes counter
+	m_decodedBytesCount += decodedLen;//m_engine->time() * freq * stereoMultiply * sizeof(short);
 
 	m_engine->fastForward(100);
 }
@@ -867,27 +868,67 @@ void CThreadSidPlayer::ClearSTILData(void)
 
 }
 
-// Decode song data 
-int CThreadSidPlayer::Decode(void * Buffer, int Count)
+/** 
+* Decode song data
+*/
+int CThreadSidPlayer::Decode(void* Buffer, int Count)
 {
-
-
-	if (m_playerStatus == PlayerStatus_t::SP_STOPPED)
+	/* 
+	engine->play() - zwraca liczbê wyprodukowanych sampli dla mono
+	engine->mix() - jako parametr przyjmuje ile sampli chcemy ziksowaæ ALE wype³nia i zwraca 2x wiêcej jesli miksowanie jest w trybie stereo (m_engine->initMixer(STEREO))
+	wiêc przy wyliczaniu liczby cykli musimy uwzglêdniæ pojemnoœc bufora i tryb miksowania
+	
+	*/
+	if (m_playerStatus == PlayerStatus_t::SP_STOPPED || m_decodedBytesCount >= m_totalBytesCount)
 	{
 		return 0;
 	}
 
-	if (m_decodedBytesCount >= m_totalBytesCount)
+	// 1. Przygotowanie wskaŸników i liczników
+	short* bufPtr = reinterpret_cast<short*>(Buffer);
+	int bytesPerSample = sizeof(short); // 2 bajty
+	int totalShortsToFill = Count / bytesPerSample; // Ca³kowita liczba shortów do zapisania
+	int shortsWritten = 0; // Ile ju¿ zapisaliœmy
+
+	bool isStereo = (m_playerConfig.sidConfig.playback == SidConfig::STEREO);
+	int channels = isStereo ? 2 : 1;
+
+	// 3. Obliczenie wspó³czynnika Cykle -> Sample
+	// Wzór: cycles = samples * (cpu_freq / output_freq)
+	const double cpuFreq = m_engine->getCpuFrequency();
+	double outputFreq = static_cast<double>(m_playerConfig.sidConfig.frequency);
+	double cyclesPerSample = cpuFreq / outputFreq;
+	int decodedSamples;
+	int requiredCycles = (totalShortsToFill / channels) * cyclesPerSample;
+
+	// Zabezpieczenie przed pêtl¹ nieskoñczon¹ w przypadku b³êdu
+	if (outputFreq <= 0) return 0;
+
+	int oneStepCycles = 3000;
+	int iterations = requiredCycles / oneStepCycles;
+
+	if (iterations <= 0)
 	{
-		return 0;
+		iterations = 1;
+		if (requiredCycles <= 0)
+		{
+			requiredCycles = 50;
+		}
+		oneStepCycles = requiredCycles;
 	}
-	int toReadSampleCount = (Count / 2);// *m_channels;
-	//libsidplayfp operuje na samplach 16 bitowych wiêc musimy odpowiednio mno¿yæ lub dzieliæ przez 2 liczbê bajtów
-	int decodedLen = m_engine->play(reinterpret_cast<short*>(Buffer), toReadSampleCount);
-	m_decodedBytesCount += (decodedLen*2);// Count / 2; //decodedLen;
-	if (m_decodedBytesCount >= m_totalBytesCount)
+
+	for (int i = 0; i < iterations; ++i)
 	{
-		m_decodedBytesCount = m_totalBytesCount;
+		decodedSamples = m_engine->play(oneStepCycles);
+		// mix() zwraca ile ramek faktycznie zmiksowano
+		unsigned int mixedSamples = m_engine->mix(bufPtr, decodedSamples);
+
+		// C. Przesuñ wskaŸniki
+		bufPtr += mixedSamples;
+		shortsWritten += mixedSamples;
+		m_decodedBytesCount += (mixedSamples * sizeof(short));
 	}
-	return decodedLen * 2; // Count;
+	return shortsWritten * bytesPerSample;
+
 }
+
