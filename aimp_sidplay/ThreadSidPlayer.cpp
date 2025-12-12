@@ -537,6 +537,7 @@ void CThreadSidPlayer::SetConfig(PlayerConfig* newConfig)
 		rs->filter8580Curve(0.5);
 		rs->filter6581Range(0.5);
 		rs->combinedWaveformsStrength(SidConfig::sid_cw_t::AVERAGE);
+		//rs->combinedWaveformsStrength(SidConfig::sid_cw_t::STRONG);
 		//filter always enabled
 		rs->filter(true);
 	}
