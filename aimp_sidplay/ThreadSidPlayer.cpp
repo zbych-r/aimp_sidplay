@@ -600,7 +600,7 @@ void CThreadSidPlayer::DoSeek(UINT64 newPos)
 	int freq = m_playerConfig.sidConfig.frequency;
 	int decodedLen = 0;
 	const int TEMP_BUF_LEN = 8192;
-	byte tmpDecodeBuf[TEMP_BUF_LEN];
+	std::byte tmpDecodeBuf[TEMP_BUF_LEN];
 
 	if (newPos <= m_decodedBytesCount)
 	{

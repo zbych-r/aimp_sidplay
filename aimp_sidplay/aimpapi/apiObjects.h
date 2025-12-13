@@ -13,8 +13,11 @@
 #ifndef apiObjectsH
 #define apiObjectsH
 
+#include <cstddef>
 #include <windows.h>
 #include <unknwn.h>
+
+
 
 static const GUID IID_IAIMPConfig = {0x41494D50, 0x436F, 0x6E66, 0x69, 0x67, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 static const GUID IID_IAIMPDPIAware = {0x41494D50, 0x4450, 0x4941, 0x77, 0x61, 0x72, 0x65, 0x00, 0x00, 0x00, 0x00};
@@ -212,7 +215,7 @@ class IAIMPImageContainer: public IUnknown
 	public:
 		virtual HRESULT WINAPI CreateImage(IAIMPImage **Image) = 0;
 		virtual HRESULT WINAPI GetInfo(SIZE *Size, int *FormatID) = 0;
-		virtual byte* WINAPI GetData() = 0;
+		virtual std::byte* WINAPI GetData() = 0;
 		virtual DWORD WINAPI GetDataSize() = 0;
 		virtual HRESULT WINAPI SetDataSize(DWORD Value) = 0;
 };
